@@ -1,0 +1,25 @@
+includes:
+    - ./vendor/nunomaduro/larastan/extension.neon
+
+parameters:
+
+    paths:
+        - app
+
+    # The level 8 is the highest level
+    level: 5
+
+    #ignoreErrors:
+
+    excludePaths:
+        - ./*/*/FileToBeExcluded.php
+        - app/Nova/*
+        - app/Firebase/*
+        - app/Http/Middleware/Authenticate.php
+        - app/Http/Controllers/Auth/*
+        - app/Console/Commands/*
+        - app/Topics/TopicsFromRecall.php
+        - app/Notifications/NotifyUserOfNewRecallsRepository.php
+        - app/Http/Resources/*
+
+    checkMissingIterableValueType: false
