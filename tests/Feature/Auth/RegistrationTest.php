@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Auth;
 
+use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -51,5 +52,27 @@ class RegistrationTest extends TestCase
         ]);
 
         $this->assertDatabaseCount('users', 0);
+    }
+
+    public function test_saves_terms()
+    {
+        Features::shouldReceive('accessible')
+            ->with('agrees_to_terms')
+            ->andReturn(false);
+
+        Features::shouldReceive('accessible')
+            ->with('agrees_to_terms_model')
+            ->andReturn(true);
+
+        $response = $this->post('/register', [
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            "agrees_to_terms" => true,
+            'password' => 'password',
+            'password_confirmation' => 'password',
+        ]);
+
+        $this->assertDatabaseCount('users', 1);
+        $this->assertNotNull(User::first()->agrees_to_terms);
     }
 }

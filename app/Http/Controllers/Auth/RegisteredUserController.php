@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
+use YlsIdeas\FeatureFlags\Facades\Features;
 
 class RegisteredUserController extends Controller
 {
@@ -46,6 +47,11 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+
+        if(Features::accessible("agrees_to_terms_model")) {
+            $user->agrees_to_terms = now();
+            $user->save();
+        }
 
         event(new Registered($user));
 
