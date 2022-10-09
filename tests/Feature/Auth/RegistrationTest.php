@@ -2,9 +2,10 @@
 
 namespace Tests\Feature\Auth;
 
+use Tests\TestCase;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
+use YlsIdeas\FeatureFlags\Facades\Features;
 
 class RegistrationTest extends TestCase
 {
@@ -28,5 +29,22 @@ class RegistrationTest extends TestCase
 
         $this->assertAuthenticated();
         $response->assertRedirect(RouteServiceProvider::HOME);
+    }
+
+    public function test_terms_validation()
+    {
+        Features::shouldReceive('accessible')
+            ->with('agrees_to_terms')
+            ->once()
+            ->andReturn(false);
+
+        $response = $this->post('/register', [
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+        ]);
+
+        $response->assertStatus(302);
     }
 }
