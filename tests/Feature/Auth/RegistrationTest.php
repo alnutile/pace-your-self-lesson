@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\Auth;
 
-use Tests\TestCase;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 use YlsIdeas\FeatureFlags\Facades\Features;
 
 class RegistrationTest extends TestCase
@@ -20,6 +20,11 @@ class RegistrationTest extends TestCase
 
     public function test_new_users_can_register()
     {
+        Features::shouldReceive('accessible')
+            ->with('agrees_to_terms')
+            ->once()
+            ->andReturn(false);
+
         $response = $this->post('/register', [
             'name' => 'Test User',
             'email' => 'test@example.com',
@@ -36,7 +41,7 @@ class RegistrationTest extends TestCase
         Features::shouldReceive('accessible')
             ->with('agrees_to_terms')
             ->once()
-            ->andReturn(false);
+            ->andReturn(true);
 
         $response = $this->post('/register', [
             'name' => 'Test User',
@@ -45,6 +50,6 @@ class RegistrationTest extends TestCase
             'password_confirmation' => 'password',
         ]);
 
-        $response->assertStatus(302);
+        $this->assertDatabaseCount('users', 0);
     }
 }
