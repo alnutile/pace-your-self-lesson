@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Tightenco\Ziggy\Ziggy;
+use YlsIdeas\FeatureFlags\Facades\Features;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -37,6 +38,9 @@ class HandleInertiaRequests extends Middleware
         return array_merge(parent::share($request), [
             'auth' => [
                 'user' => $request->user(),
+            ],
+            'feature_flags' => [
+                'agrees_to_terms_ui' => Features::accessible('agrees_to_terms_ui'),
             ],
             'ziggy' => function () use ($request) {
                 return array_merge((new Ziggy)->toArray(), [

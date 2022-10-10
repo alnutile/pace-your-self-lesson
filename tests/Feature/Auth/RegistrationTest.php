@@ -22,9 +22,18 @@ class RegistrationTest extends TestCase
     public function test_new_users_can_register()
     {
         Features::shouldReceive('accessible')
-            ->with('agrees_to_terms')
+            ->with('agrees_to_terms_ui')
+            ->andReturn(false);
+
+        Features::shouldReceive('accessible')
+            ->with('agrees_to_terms_validation')
             ->once()
             ->andReturn(false);
+
+        Features::shouldReceive('accessible')
+            ->with('agrees_to_terms_model')
+            ->once()
+            ->andReturn(true);
 
         $response = $this->post('/register', [
             'name' => 'Test User',
@@ -40,9 +49,16 @@ class RegistrationTest extends TestCase
     public function test_terms_validation()
     {
         Features::shouldReceive('accessible')
-            ->with('agrees_to_terms')
-            ->once()
-            ->andReturn(true);
+            ->with('agrees_to_terms_ui')
+            ->andReturn(false);
+
+        Features::shouldReceive('accessible')
+            ->with('agrees_to_terms_validation')
+        ->andReturn(true);
+
+        Features::shouldReceive('accessible')
+            ->with('agrees_to_terms_model')
+            ->never();
 
         $response = $this->post('/register', [
             'name' => 'Test User',
@@ -57,7 +73,11 @@ class RegistrationTest extends TestCase
     public function test_saves_terms()
     {
         Features::shouldReceive('accessible')
-            ->with('agrees_to_terms')
+            ->with('agrees_to_terms_ui')
+            ->andReturn(false);
+
+        Features::shouldReceive('accessible')
+            ->with('agrees_to_terms_validation')
             ->andReturn(false);
 
         Features::shouldReceive('accessible')
@@ -67,7 +87,7 @@ class RegistrationTest extends TestCase
         $response = $this->post('/register', [
             'name' => 'Test User',
             'email' => 'test@example.com',
-            "agrees_to_terms" => true,
+            'agrees_to_terms' => true,
             'password' => 'password',
             'password_confirmation' => 'password',
         ]);

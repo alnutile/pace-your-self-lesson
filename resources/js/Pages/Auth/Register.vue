@@ -5,13 +5,21 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/inertia-vue3';
+import Checkbox from "@/Components/Checkbox.vue";
 
 const form = useForm({
     name: '',
     email: '',
     password: '',
     password_confirmation: '',
-    terms: false,
+    agrees_to_terms: false,
+});
+
+const props = defineProps({
+    feature_flags: {
+        type: [Array],
+        default: [],
+    }
 });
 
 const submit = () => {
@@ -48,6 +56,11 @@ const submit = () => {
                 <InputLabel for="password_confirmation" value="Confirm Password" />
                 <TextInput id="password_confirmation" type="password" class="mt-1 block w-full" v-model="form.password_confirmation" required autocomplete="new-password" />
                 <InputError class="mt-2" :message="form.errors.password_confirmation" />
+            </div>
+
+            <div v-if="feature_flags.agrees_to_terms_ui" class="mt-4 flex items-center gap-4">
+                <Checkbox id="agrees_to_terms" v-model="form.agrees_to_terms" required></Checkbox>
+                <InputLabel for="agrees_to_terms" value="Agree to Terms" />
             </div>
 
             <div class="flex items-center justify-end mt-4">
