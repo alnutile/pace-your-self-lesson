@@ -28,6 +28,6 @@ class PingEnvoyer extends Command
      */
     public function handle()
     {
-        Http::get('http://beats.envoyer.io/heartbeat/' . env("ENVOYER_PING"));
+        Http::get('http://beats.envoyer.io/heartbeat/'.env('ENVOYER_PING'));
     }
 }
