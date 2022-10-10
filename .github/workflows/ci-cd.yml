@@ -75,7 +75,7 @@ jobs:
           php artisan storage:link
 
       - name: Test with phpunit
-        run: | 
+        run: |
           npm install && npm run build
           XDEBUG_MODE=coverage php artisan test --coverage  --min=50
         env:
@@ -98,6 +98,6 @@ jobs:
         run: composer global require laravel/vapor-cli
       - name: Install Project Dependencies
         run: |
-          curl https://forge.laravel.com/servers/467889/sites/1759301/deploy/http?token=${{ secrets.FORGE}}
+          curl https://envoyer.io/deploy/${{ secrets.ENVOYER }}
 
 
